@@ -1,5 +1,11 @@
 import { _kc } from "../constants/tenantConstants";
 import { Keycloak_Client } from "../constants/constants";
+import {
+  userToken,
+  userRoles,
+  userDetails,
+  userAuthentication,
+} from "./userSlice";
 
 const KeycloakData = _kc;
 /**
@@ -28,26 +34,27 @@ const initKeycloak = (dispatch) => {
       }
 
       const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
-      dispatch(setUserRoles(UserRoles));
-      dispatch(setUserToken(KeycloakData.token));
+      dispatch(userRoles(UserRoles));
+      dispatch(userToken(KeycloakData.token));
       //Set Cammunda/Formio Base URL
-      setApiBaseUrlToLocalStorage();
 
-      KeycloakData.loadUserInfo().then((res) => dispatch(setUserDetails(res)));
-      dispatch(setUserAuth(res.authenticated));
-      refreshToken(store);
+      KeycloakData.loadUserInfo().then((res) => {
+        dispatch(userDetails(res));
+        dispatch(userAuthentication(res.authenticated));
+      });
+      refreshToken(dispatch);
     })
     .catch(console.error);
 };
 
 let refreshInterval;
-const refreshToken = (store) => {
+const refreshToken = (dispatch) => {
   refreshInterval = setInterval(() => {
     KeycloakData &&
       KeycloakData.updateToken(5)
         .then((refreshed) => {
           if (refreshed) {
-            store.dispatch(setUserToken(KeycloakData.token));
+            dispatch(userToken(KeycloakData.token));
           }
         })
         .catch((error) => {

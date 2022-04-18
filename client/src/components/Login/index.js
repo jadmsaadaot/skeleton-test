@@ -1,17 +1,15 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { authorize } from "./loginSlice";
+import UserService from "../../services/UserServices";
 
 const Login = () => {
-  const authorized = useSelector((state) => state.auth.authorized);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!authorized) {
-      dispatch(authorize());
-    }
-  }, []);
-  return <div>login</div>;
+  return (
+    <button
+      className="btn btn-lg btn-warning"
+      onClick={() => UserService.doLogin()}
+    >
+      Login
+    </button>
+  );
 };
 
 export default Login;
