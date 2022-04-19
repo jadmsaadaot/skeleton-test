@@ -1,8 +1,9 @@
-import { createTheme } from "@mui/system";
+import { deepmerge } from "@mui/utils";
+import { createTheme } from "@mui/material";
 
 const Colors = {
-  primary: "",
-  secondary: "",
+  primary: "#0052cc",
+  secondary: "#edf2ff",
   success: "",
   info: "",
   danger: "",
@@ -36,5 +37,4 @@ const theme = createTheme({
     },
   },
 });
-
 export default theme;

@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
-import { Navbar } from "./components/layout/Navbar";
+import Navbar from "./components/layout/Navbar";
 import { BrowserRouter as Router } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import BaseRouting from "./components/BaseRouting";
