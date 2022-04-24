@@ -1,14 +1,26 @@
-import React, { useEffect } from "react";
+import React from "react";
 import UserService from "../../services/UserServices";
+import { Grid } from "@mui/material";
 
 const Login = () => {
   return (
-    <button
-      className="btn btn-lg btn-warning"
-      onClick={() => UserService.doLogin()}
+    <Grid
+      container
+      direction="row"
+      justifyContent="flex-start"
+      alignItems="flex-start"
+      spacing={2}
+      padding="2em"
     >
-      Login
-    </button>
+      <Grid item>
+        <button
+          className="btn btn-lg btn-warning"
+          onClick={() => UserService.doLogin()}
+        >
+          Login
+        </button>
+      </Grid>
+    </Grid>
   );
 };
 

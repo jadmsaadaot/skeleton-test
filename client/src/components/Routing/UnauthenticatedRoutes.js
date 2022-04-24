@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import Login from "../Login";
 
 const UnauthenticatedRoutes = () => {

@@ -1,23 +1,37 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Navbar from "./components/layout/Navbar";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import BaseRouting from "./components/BaseRouting";
-import { CircularProgress } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import BaseRouting from "./components/Routing/BaseRouting";
+import { CircularProgress, Grid } from "@mui/material";
+import UserService from "./services/UserServices";
 
 const App = () => {
-  const [appLoading, setAppLoading] = useState(true);
   const dispatch = useDispatch();
-  // const authToken = decrypt(localStorage.getItem("authToken"));
+
+  const authenticated = useSelector((state) => state.user.isAuthenticated);
 
   useEffect(() => {
-    // UserService.initKeycloak(dispatch);
-    setAppLoading(false);
+    if (authenticated === null) {
+      UserService.initKeycloak(dispatch);
+    }
   }, [dispatch]);
 
-  if (appLoading) {
-    return <CircularProgress />;
+  if (authenticated === null) {
+    return (
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ minHeight: "90vh" }}
+      >
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      </Grid>
+    );
   }
 
   return (

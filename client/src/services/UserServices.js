@@ -4,19 +4,19 @@ import {
   userToken,
   userRoles,
   userDetails,
+  userAuthorization,
   userAuthentication,
 } from "./userSlice";
 
 const KeycloakData = _kc;
 /**
- * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
- *
- * @param onAuthenticatedCallback
+ * Initializes Keycloak instance.
  */
 const initKeycloak = (dispatch) => {
   _kc
     .init({
       onLoad: "check-sso",
+      promiseType: "native",
       silentCheckSsoRedirectUri:
         window.location.origin + "/silent-check-sso.html",
       pkceMethod: "S256",
@@ -25,33 +25,38 @@ const initKeycloak = (dispatch) => {
     .then((authenticated) => {
       if (!authenticated) {
         console.warn("not authenticated!");
-        doLogin();
+        dispatch(userAuthentication(authenticated));
         return;
       }
 
       if (!KeycloakData.resourceAccess[Keycloak_Client]) {
         doLogout();
+        return;
       }
 
-      const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
-      dispatch(userRoles(UserRoles));
-      dispatch(userToken(KeycloakData.token));
-      //Set Cammunda/Formio Base URL
+      if (authenticated) {
+        const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
+        dispatch(userRoles(UserRoles));
+        dispatch(userToken(KeycloakData.token));
 
-      KeycloakData.loadUserInfo().then((res) => {
-        dispatch(userDetails(res));
-        dispatch(userAuthentication(res.authenticated));
-      });
-      refreshToken(dispatch);
+        KeycloakData.loadUserInfo().then((res) => {
+          dispatch(userDetails(res));
+          dispatch(userAuthorization(true));
+        });
+        dispatch(userAuthentication(authenticated));
+        refreshToken(dispatch);
+      }
     })
-    .catch(console.error);
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 let refreshInterval;
 const refreshToken = (dispatch) => {
   refreshInterval = setInterval(() => {
     KeycloakData &&
-      KeycloakData.updateToken(5)
+      KeycloakData.updateToken(3000)
         .then((refreshed) => {
           if (refreshed) {
             dispatch(userToken(KeycloakData.token));
@@ -61,7 +66,7 @@ const refreshToken = (dispatch) => {
           console.log(error);
           userLogout();
         });
-  }, 6000);
+  }, 60000);
 };
 
 /**
@@ -74,19 +79,18 @@ const userLogout = () => {
   doLogout();
 };
 
-const doLogin = _kc.login;
+const doLogin = KeycloakData.login;
 
-const doLogout = _kc.logout;
+const doLogout = KeycloakData.logout;
 
-const getToken = () => _kc.token;
+const getToken = () => KeycloakData.token;
 
-const isLoggedIn = () => !!_kc.token;
+const isLoggedIn = () => !!KeycloakData.token;
 
-const getUsername = () => _kc.tokenParsed?.preferred_username;
+const getUsername = () => KeycloakData.tokenParsed?.preferred_username;
 
-const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
-
-const getFormioToken = () => localStorage.getItem("formioToken");
+const hasRole = (roles) =>
+  roles.some((role) => KeycloakData.hasRealmRole(role));
 
 const UserService = {
   initKeycloak,
@@ -96,7 +100,6 @@ const UserService = {
   getToken,
   getUsername,
   hasRole,
-  getFormioToken,
 };
 
 export default UserService;

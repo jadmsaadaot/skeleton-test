@@ -1,4 +1,3 @@
-import { deepmerge } from "@mui/utils";
 import { createTheme } from "@mui/material";
 
 const Colors = {
@@ -20,7 +19,7 @@ const Colors = {
   black: "",
 };
 
-const theme = createTheme({
+const Theme = createTheme({
   palette: {
     primary: {
       main: Colors.primary,
@@ -37,4 +36,4 @@ const theme = createTheme({
     },
   },
 });
-export default theme;
+export default Theme;

@@ -3,9 +3,9 @@ import AuthenticatedRoutes from "./AuthenticatedRoutes";
 import UnauthenticatedRoutes from "./UnauthenticatedRoutes";
 
 const BaseRouting = () => {
-  const authorized = useSelector((state) => state.auth.authorized);
+  const authenticated = useSelector((state) => state.user.isAuthenticated);
 
-  if (!authorized) {
+  if (!authenticated) {
     return <UnauthenticatedRoutes />;
   }
   return <AuthenticatedRoutes />;

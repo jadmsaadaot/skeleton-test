@@ -4,9 +4,9 @@ const initialState = {
   bearerToken: "",
   roles: "",
   userDetail: {},
-  isAuthenticated: false,
+  isAuthenticated: null,
   currentPage: "",
-  isAuthorized: false,
+  isAuthorized: null,
 };
 
 export const userSlice = createSlice({
@@ -27,6 +27,9 @@ export const userSlice = createSlice({
     userDetails: (state, action) => {
       state.userDetail = action.payload;
     },
+    userAuthorization: (state, action) => {
+      state.isAuthorized = action.payload;
+    },
     userAuthentication: (state, action) => {
       state.isAuthenticated = action.payload;
     },
@@ -34,7 +37,12 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { userToken, userRoles, userDetails, userAuthentication } =
-  userSlice.actions;
+export const {
+  userToken,
+  userRoles,
+  userDetails,
+  userAuthorization,
+  userAuthentication,
+} = userSlice.actions;
 
 export default userSlice.reducer;
