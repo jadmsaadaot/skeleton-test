@@ -13,9 +13,7 @@ const App = () => {
   const authenticated = useSelector((state) => state.user.isAuthenticated);
 
   useEffect(() => {
-    if (authenticated === null) {
-      UserService.initKeycloak(dispatch);
-    }
+    UserService.initKeycloak(dispatch);
   }, [dispatch]);
 
   if (authenticated === null) {
